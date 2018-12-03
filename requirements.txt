@@ -1,0 +1,24 @@
+-i http://pypi.douban.com/simple/
+--trusted-host pypi.douban.com
+beautifulsoup4==4.6.3
+bs4==0.0.1
+click==7.0
+dukpy==0.2.2
+future==0.17.1
+git+https://github.com/waditu/tushare.git@master#egg=tushare
+javascripthon==0.10; python_version > '3.4'
+jinja2==2.10
+jupyter-echarts-pypkg==0.1.2
+lml==0.0.2
+macropy3==1.1.0b2
+markupsafe==1.1.0
+numpy==1.15.4
+pandas==0.23.4
+pillow==5.3.0
+plyvel==1.0.5
+pyecharts-javascripthon==0.0.6
+pyecharts-jupyter-installer==0.0.3
+pyecharts==0.5.11
+python-dateutil==2.7.5
+pytz==2018.7
+six==1.11.0

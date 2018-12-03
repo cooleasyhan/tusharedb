@@ -1,0 +1,29 @@
+[[source]]
+url = "http://pypi.douban.com/simple/"
+verify_ssl = false
+name = "pypi"
+
+[packages]
+tushare = {git = "https://github.com/waditu/tushare.git", ref = "master"}
+plyvel = "*"
+bs4 = "*"
+click = "*"
+pandas = "*"
+pyecharts = "*"
+
+[dev-packages]
+pylint = "*"
+"autopep8" = "*"
+pip = "==18.1"
+bumpversion = "==0.5.3"
+wheel = "==0.32.1"
+watchdog = "==0.9.0"
+"flake8" = "*"
+tox = "==3.5.2"
+coverage = "==4.5.1"
+sphinx = "==1.8.1"
+twine = "==1.12.1"
+rope = "*"
+
+[requires]
+python_version = "3.6"
