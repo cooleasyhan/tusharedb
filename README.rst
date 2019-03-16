@@ -33,6 +33,46 @@ Features
 
 [由于tushare pro 增加了调用限制，1分钟只能发送150请求....]
 
+
+* 提供Job封装
+.. code-block:: python
+    from tusharedb.api import api, pro_bar
+    from tusharedb.conc import TsDbJob
+
+    class TestJob(TsDbJob):
+
+        def fetch(self, ts_code, start_date=None, end_date=None):
+            df = pro_bar(ts_code=ts_code, start_date=start_date,
+                        end_date=end_date)
+            return df
+
+        def handler(self, ts_code, df):
+            import time
+
+            if df is not None and not df.empty:
+                return {'ts_code': ts_code, 'size': len(df)}
+
+        def reduce(self, df):
+            print('SUM:', sum(df['size']))
+            return df
+
+
+    def main():
+        codes = api.stock_basic(list_status='L',
+                                fields='ts_code')
+        codes = codes.ts_code
+        job = TestJob()
+        df = job(codes[:100])
+
+
+    if __name__ == "__main__":
+        main()
+        # 结果：
+        # Fetch:  [####################################]  100%
+        # SUM: 514767
+        # use  2.0354549884796143
+
+
 Credits
 -------
 

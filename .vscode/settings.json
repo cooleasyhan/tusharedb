@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/Users/yihan/.local/share/virtualenvs/tusharedb-yH-8e1b-/bin/python"
+    "python.pythonPath": "/Users/yihan/.local/share/virtualenvs/tusharedb-yH-8e1b-/bin/python",
+    "restructuredtext.confPath": "${workspaceFolder}/docs"
 }

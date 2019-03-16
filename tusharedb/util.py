@@ -2,7 +2,7 @@ import logging
 import time
 
 
-def speed_fun(minutes=1, max_cnt=150):
+def speed_fun(minutes=1, max_cnt=200):
     cnt = 0
     start = None
     sum_ = 0
@@ -17,9 +17,9 @@ def speed_fun(minutes=1, max_cnt=150):
         cnt += 1
         sum_ += (end - start)
 
-        if cnt > max_cnt:
-            logging.debug('Start sleep... sleep time: %s', sec-sum_)
-            time.sleep(sec-sum_)
+        if cnt >= max_cnt:
+            logging.debug('Start sleep... sleep time: %s', sec-sum_+1)
+            time.sleep(sec-sum_ + 1)
             cnt = 0
             sum_ = 0
             start = None
@@ -39,3 +39,5 @@ def speed_fun(minutes=1, max_cnt=150):
 
 
 speed_it = speed_fun()
+
+speed_20_per_min = speed_fun(max_cnt=20)

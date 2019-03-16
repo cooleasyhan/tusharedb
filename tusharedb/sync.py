@@ -77,6 +77,7 @@ def _sync_code(start, end, apis, recent, ok_codes, callback, ):
                     db_config = config.get_write_api_db(
                         api_name, config.API_TYPE_TS_CODE, recent=recent)
                     dbcls = db.dbs[db_config]
+                    dbcls(code).delete()
                     dbcls(code).save(df)
 
             callback(code)
@@ -124,24 +125,30 @@ def sync_index():
     end = datetime.datetime.now()
     with click.progressbar(codes) as bar:
         for code in bar:
-
             for api_name in api_names:
                 dfs = []
                 start_date = start
                 config_end_date = end
-                for end_date in pd.date_range(start=start_date, end=config_end_date, freq='2Y'):
+                for end_date in pd.date_range(start=start_date, end=config_end_date, freq='5Y'):
                     logger.debug('%s,%s,%s,%s', api_name,
                                  code, start_date, end_date)
+                    util.speed_20_per_min()
                     dfs.append(api.query(api_name, ts_code=code,
                                          start_date=start_date.strftime('%Y%m%d'), end_date=end_date.strftime('%Y%m%d')))
 
                     start_date = end_date + datetime.timedelta(days=1)
                 logger.debug('%s,%s,%s,%s', api_name,
                              code, start_date, config_end_date)
+                util.speed_20_per_min()
                 dfs.append(api.query(api_name, ts_code=code,
                                      start_date=start_date.strftime('%Y%m%d'), end_date=config_end_date.strftime('%Y%m%d')))
 
                 df = pd.concat(dfs)
+                df = df.sort_values('trade_date')
+                df.index = pd.DatetimeIndex(df.trade_date)
+                df = df.reindex(pd.date_range(
+                    df.index[0], df.index[-1]), method='bfill')
+                df = df.assign(trade_date=df.index.strftime('%Y%m%d'))
                 if df.empty:
                     continue
                 else:
@@ -167,8 +174,8 @@ def sync_stock_basic():
 if __name__ == "__main__":
     import sys
     logging.basicConfig(level=logging.DEBUG)
-    sync_stock_basic()
+    # sync_stock_basic()
     # sync_daily()
     # sync_code_history()
     # sync_code_recent()
-    # sync_index()
+    sync_index()

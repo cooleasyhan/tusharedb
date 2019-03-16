@@ -77,11 +77,11 @@ class DataApi:
                 df = db.read(tmp1)
             else:
                 df = db.read()
-
+            # print(df)
             dfs.append(df)
 
         if len(dfs) > 1:
-            df = pd.concat(dfs)
+            df = pd.concat(dfs, sort=False)
             df = config.filter_df(api_name, api_type, df, **kwargs)
             df = df.sort_values('trade_date', ascending=False)
             df.index = range(len(df))
@@ -330,6 +330,36 @@ def pro_bar(ts_code='', start_date=None, end_date=None, freq='D', asset='E',
         else:
             return
     raise IOError('ERROR.')
+
+
+def index_daily(ts_code=None, trade_date=None, start_date=None, end_date=None, online=True):
+    api_name = 'index_daily'
+    if not start_date:
+        start_date = datetime.datetime.strptime(config.SYNC_START, '%Y-%m-%d')
+    if not end_date:
+        end_date = datetime.datetime.now()
+
+    if online:
+        _api = api.pro
+    else:
+        _api = api
+
+    dfs = []
+    for _end_date in pd.date_range(start=start_date, end=end_date, freq='5Y'):
+        logger.debug('%s,%s,%s,%s', api_name,
+                     ts_code, start_date, end_date)
+        dfs.append(_api.query(api_name, ts_code=ts_code, trade_date=trade_date,
+                              start_date=start_date.strftime('%Y%m%d'), end_date=_end_date.strftime('%Y%m%d')))
+
+        start_date = _end_date + datetime.timedelta(days=1)
+    logger.debug('%s,%s,%s,%s', api_name,
+                 ts_code, start_date, end_date)
+    dfs.append(_api.query(api_name, ts_code=ts_code, trade_date=trade_date,
+                          start_date=start_date.strftime('%Y%m%d'), end_date=end_date.strftime('%Y%m%d')))
+
+    df = pd.concat(dfs)
+    df = df.sort_values('trade_date')
+    return df
 
 
 if __name__ == "__main__":

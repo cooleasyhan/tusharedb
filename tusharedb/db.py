@@ -123,6 +123,7 @@ class DfDb(Db):
             tmp[force_unicode(c)] = v
             index = pickle.loads(self.db.get(force_bytes(self.index_col)))
         if tmp:
+            # print(tmp, index)
             df = pd.DataFrame(data=tmp, index=index)
             df = self.handler_result(df)
             return df
@@ -297,7 +298,7 @@ if __name__ == "__main__":
 
     # print(db.read())
     db = dbs[config.DT_CODE_RECENTBFQ]
-    print(db.prefix)
+    # print(db.prefix)
     for k in db().keys():
 
         print(k)
