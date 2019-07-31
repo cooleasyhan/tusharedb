@@ -5,7 +5,7 @@ TS_TOKEN = os.environ.get('TS_TOKEN')
 LEVEL_DB_NAME = os.environ.get('LEVEL_DB_NAME')
 
 SYNC_START = '1990-12-19'
-SYNC_CODE_HISTORY_END = '2018-11-13'
+SYNC_CODE_HISTORY_END = '2019-01-01'
 
 PROCESS_POOL_SIZE = int(os.environ.get(
     'TS_PROCESS_POOL_SIZE', os.cpu_count())) or 1
@@ -32,6 +32,8 @@ DT_CODE_INDEX = 'code:index'
 DT_DAILY_INDEX = 'daily:index'
 
 DT_NORMAL_STOCK_BASIC = 'normal:stockbasic'
+
+DT_NEWS = 'daily:news'
 
 
 APISETUPS = collections.defaultdict(dict)
@@ -94,6 +96,9 @@ setup_api('daily_basic', ts_code_db=(DT_CODE_BASIC, DT_CODE_RECENTBASIC),
 
 setup_api('index_daily', ts_code_db=(DT_CODE_INDEX,),
           trade_date_db=DT_DAILY_INDEX, filters=['start_date', 'end_date'])
+
+setup_api('news', ts_code_db=(), trade_date_db=DT_NEWS,
+          filters=['start_date', 'end_date'])
 
 
 def get_api_setup(api_name, api_type):

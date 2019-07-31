@@ -41,3 +41,4 @@ def speed_fun(minutes=1, max_cnt=200):
 speed_it = speed_fun()
 
 speed_20_per_min = speed_fun(max_cnt=20)
+speed_10_per_min = speed_fun(max_cnt=9)

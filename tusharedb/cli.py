@@ -34,6 +34,8 @@ def sync_daily(cache):
     dbsync.sync_daily()
     click.echo('sync_stock_basic')
     dbsync.sync_stock_basic()
+    click.echo('sync_index')
+    dbsync.sync_index()
 
     dbsync.sync_code_history()
 
@@ -43,6 +45,13 @@ def sync_daily(cache):
     else:
         click.echo('sync_code_recent with cache')
         dbsync.sync_code_recent(nocache=True)
+
+
+@sync.command()
+def sync_news():
+    '''增量同步新闻'''
+    click.echo('sync_news')
+    dbsync.sync_news()
 
 
 def main():

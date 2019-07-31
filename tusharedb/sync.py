@@ -171,6 +171,49 @@ def sync_stock_basic():
     dbcls().save(df)
 
 
+def sync_news():
+    sate = db.StateDb()
+    dates = [date for date in sate.list_news()]
+    apis = ['news']
+    # apis = ['daily_basic', ]
+    # methods = {'daily': db.dbs[config.DT_DAILY_BFQ],
+    #            'adj_factor': db.dbs[config.DT_DAILY_ADJFACTOR], 'daily_basic': db.dbs[config.DT_DAILY_BASIC]}
+    with click.progressbar(pd.date_range('2018-10-11', datetime.datetime.now())) as bar:
+
+        for date in bar:
+            _date = date.strftime('%Y%m%d')
+            # 重新收集近2天数据
+            if _date in dates and date < (datetime.datetime.now() - datetime.timedelta(days=2)):
+                logger.debug('pass %s' % _date)
+                continue
+            for api_name in apis:
+                start_date = date.strftime('%Y%m%d %H:%M:%S')
+                dfs = []
+                for end_date in pd.date_range(date, date + datetime.timedelta(days=1), freq='8h')[1:]:
+                    end_date = end_date.strftime('%Y%m%d %H:%M:%S')
+                    logger.debug(
+                        'fetch data from tushare, api_name: %s, start_date: %s, end_date:%s', api_name, start_date,  _date)
+                    util.speed_10_per_min()
+                    tmp = api.query(
+                        api_name, start_date=start_date, end_date=end_date)
+                    dfs.append(tmp)
+                    print(len(tmp))
+                    start_date = end_date
+
+                df = pd.concat(dfs)
+                if df.empty:
+                    sate.append_news(_date)
+                    continue
+                else:
+                    api_type = config.API_TYPE_TRADE_DATE
+                    dbcls_config = config.get_write_api_db(
+                        api_name, api_type)
+                    dbcls = db.dbs[dbcls_config]
+                    dbcls(_date).save(df)
+
+            sate.append_news(_date)
+
+
 if __name__ == "__main__":
     import sys
     logging.basicConfig(level=logging.DEBUG)
@@ -178,4 +221,4 @@ if __name__ == "__main__":
     # sync_daily()
     # sync_code_history()
     # sync_code_recent()
-    sync_index()
+    # sync_index()
