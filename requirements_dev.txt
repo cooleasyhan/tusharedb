@@ -24,7 +24,7 @@ packaging==18.0
 pathtools==0.1.2
 pkginfo==1.4.2
 pluggy==0.8.0
-py==1.7.0
+py==1.10.0
 pycodestyle==2.4.0
 pyflakes==2.0.0
 pygments==2.3.0
